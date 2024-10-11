@@ -61,3 +61,40 @@ exports.updateUser = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+
+
+// Get all invoices for a user by user ID
+exports.getAllInvoicesForUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).populate('invoices');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        
+        // Return all invoices associated with the user
+        res.json(user.invoices);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+// Get a single invoice for a user by invoice ID
+exports.getInvoiceForUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId).populate('invoices');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Find the invoice within the user's invoices array
+        const invoice = user.invoices.find(inv => inv._id.toString() === req.params.invoiceId);
+        if (!invoice) {
+            return res.status(404).json({ message: 'Invoice not found' });
+        }
+
+        res.json(invoice);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};

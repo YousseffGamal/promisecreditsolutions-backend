@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 // User registration
 exports.registerUser = async (req, res) => {
-    const { fullName, email, password, confirmPassword } = req.body;
+    const { fullName, email, password, confirmPassword, role } = req.body; // Include role
 
     // Check if passwords match
     if (password !== confirmPassword) {
@@ -23,6 +23,7 @@ exports.registerUser = async (req, res) => {
         email,
         password, // Password will be hashed in the user model
         profileImage: req.file ? req.file.path : null, // Store the uploaded file path
+        role: role || 'user', // Pass the role, defaulting to 'user' if none provided
     });
 
     // Generate JWT token
@@ -33,6 +34,7 @@ exports.registerUser = async (req, res) => {
     // Respond with user data and token
     res.status(201).json({ user, token });
 };
+
 
 // User login
 exports.loginUser = async (req, res) => {
