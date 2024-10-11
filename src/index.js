@@ -4,6 +4,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes'); // Ensure the path is correct
 const userRoutes = require('./routes/userRoutes'); // Add user routes
+const invoiceRoutes = require('./routes/invoiceRoutes'); // Add user routes
+
 const cors = require('cors');
 
 const app = express();
@@ -18,6 +20,7 @@ app.use('/uploads', express.static('uploads'));
 // Use your routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes); // Use user routes here
+app.use('/api', invoiceRoutes);
 
 // Connect to MongoDB
 const mongoURI = process.env.MONGODB_URI; // Use MONGODB_URI from .env
