@@ -73,7 +73,7 @@ const submitContactForm = async (req, res) => {
         // Email options
         const mailOptions = {
             from: process.env.EMAIL_USER, // Sender address
-            to: 'edenhazardd552@gmail.com', // Receiver's email address
+            to: 'youssefggamal552@gmail.com', // Receiver's email address
             subject: `New Contact Message from ${name}`, // Correct usage of template literals
             text: `Message from: ${name}\nEmail: ${email}\nMessage: ${message}`, // Correct usage of template literals
         };
