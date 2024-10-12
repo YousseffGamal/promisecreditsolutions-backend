@@ -40,26 +40,26 @@
 const Contact = require('../models/Contact');
 const nodemailer = require('nodemailer');
 
-// const transporter = nodemailer.createTransport({
-//     host: 'smtp.gmail.com',
-//     port: 465, // SSL connection
-//     secure: true, // True for SSL
-//     auth: {
-//         user: process.env.EMAIL_USER, // Your email address from .env
-//         pass: process.env.EMAIL_PASS, // Your app password from .env
-//     },
-// });
-// Set up Nodemailer transport with explicit SMTP settings
 const transporter = nodemailer.createTransport({
-    host: 'smtp-mail.outlook.com',
-    port: 587, // Use STARTTLS
-    secure: false, // False for STARTTLS (not SSL)
+    host: 'smtp.gmail.com',
+    port: 465, // SSL connection
+    secure: true, // True for SSL
     auth: {
         user: process.env.EMAIL_USER, // Your email address from .env
         pass: process.env.EMAIL_PASS, // Your app password from .env
     },
-    
 });
+// Set up Nodemailer transport with explicit SMTP settings
+// const transporter = nodemailer.createTransport({
+//     host: 'smtp-mail.outlook.com',
+//     port: 587,
+//     secure: false, 
+//     auth: {
+//         user: process.env.EMAIL_USER, 
+//         pass: process.env.EMAIL_PASS, 
+//     },
+    
+// });
 
 // Handle contact form submission
 const submitContactForm = async (req, res) => {
@@ -73,7 +73,7 @@ const submitContactForm = async (req, res) => {
         // Email options
         const mailOptions = {
             from: process.env.EMAIL_USER, // Sender address
-            to: 'waleedmaryam396@gmail.com', // Receiver's email address
+            to: 'edenhazardd552@gmail.com', // Receiver's email address
             subject: `New Contact Message from ${name}`, // Correct usage of template literals
             text: `Message from: ${name}\nEmail: ${email}\nMessage: ${message}`, // Correct usage of template literals
         };
