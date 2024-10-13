@@ -65,22 +65,12 @@ const submitContactForm = async (req, res) => {
         const contact = new Contact({ name, email, message });
         await contact.save();
 
-<<<<<<< HEAD
         // Email subject and content
         const emailSubject = `New Contact Message from ${name}`;
         const emailBody = `Message from: ${name}\nEmail: ${email}\nMessage: ${message}`;
 
         // Use sendEmail utility to send the email
         await sendEmail('youssefggamal552@gmail.com', emailSubject, emailBody);
-=======
-        // Email options
-        const mailOptions = {
-            from: process.env.EMAIL_USER, // Sender address
-            to: 'youssefggamal552@gmail.com', // Receiver's email address
-            subject: `New Contact Message from ${name}`, // Correct usage of template literals
-            text: `Message from: ${name}\nEmail: ${email}\nMessage: ${message}`, // Correct usage of template literals
-        };
->>>>>>> 73138b2744495bafa8939359c536267ad67aaa89
 
         res.status(200).send('Message sent successfully');
     } catch (err) {
@@ -88,6 +78,7 @@ const submitContactForm = async (req, res) => {
         res.status(500).send('Error: ' + err.message); // Send error response
     }
 };
+
 
 module.exports = {
     submitContactForm,

@@ -98,3 +98,31 @@ exports.getInvoiceForUser = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+
+// Update user's credit score (admin only)
+exports.updateCreditScore = async (req, res) => {
+    try {
+        // Find the user by ID
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Ensure the user performing the action is an admin
+        
+
+        // Update the credit score
+        user.creditScore = req.body.creditScore;
+
+        // Save the updated user
+        const updatedUser = await user.save();
+
+        res.status(200).json({ message: 'Credit score updated successfully', user: updatedUser });
+    } catch (error) {
+        console.error('Error updating credit score:', error);
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
+
