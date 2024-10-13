@@ -371,3 +371,14 @@ exports.createInvoice = async (req, res) => {
       res.status(500).json({ message: 'Error creating invoice', error: error.message || error });
     }
   };
+// In invoiceController.js
+exports.countInvoices = async (req, res) => {
+  console.log('Hit the countInvoices route');
+  try {
+      const invoiceCount = await Invoice.countDocuments();
+      res.status(200).json({ message: 'Invoice count fetched successfully', count: invoiceCount });
+  } catch (error) {
+      console.error('Error fetching invoice count:', error);
+      res.status(500).json({ message: 'Error fetching invoice count', error });
+  }
+};

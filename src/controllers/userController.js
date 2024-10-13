@@ -126,3 +126,14 @@ exports.updateCreditScore = async (req, res) => {
 };
 
 
+exports.getUserCount = async (req, res) => {
+    console.log('Getting user count...');
+    try {
+        const count = await User.countDocuments();
+        console.log(`User count: ${count}`);
+        res.json({ count });
+    } catch (error) {
+        console.error('Error fetching user count:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};

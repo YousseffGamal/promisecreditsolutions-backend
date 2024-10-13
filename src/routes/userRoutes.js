@@ -1,25 +1,24 @@
 const express = require('express');
-const { getAllUsers, getUserById, updateUser, deleteUser , getAllInvoicesForUser, getInvoiceForUser, updateCreditScore } = require('../controllers/userController'); // Ensure updateUser is imported correctly
+const { getAllUsers, getUserById, updateUser, deleteUser, getAllInvoicesForUser, getInvoiceForUser, updateCreditScore, getUserCount } = require('../controllers/userController');
 const { protect, admin } = require('../middleware/auth');
 const router = express.Router();
 
 // Admin can get all users
 router.route('/').get(protect, admin, getAllUsers);
 
+// Get the total number of users
+router.route('/count').get(protect, admin, getUserCount); // Define this route first
+
 // User-specific actions: Get by ID, Update, Delete
 router.route('/:id')
-// User-specific actions: Get by ID, Update, Delete
-router.route('/:id')
-    .get(protect, getUserById) // Protect this route to ensure only authenticated users can access
+    .get(protect, getUserById) // Now this won't conflict with `/count`
     .put(protect, updateUser)
     .delete(protect, admin, deleteUser);
 
 
-router.route('/:id/invoices').get(protect, getAllInvoicesForUser); // Protect this route for authenticated users
 
-// Get a single invoice for a user by invoice ID
-router.route('/:userId/invoices/:invoiceId').get(protect, getInvoiceForUser); // Protect this route for authenticated users
-
-router.route('/:id/credit-score').put( updateCreditScore);
+router.route('/:id/invoices').get(protect, getAllInvoicesForUser);
+router.route('/:userId/invoices/:invoiceId').get(protect, getInvoiceForUser);
+router.route('/:id/credit-score').put(updateCreditScore);
 
 module.exports = router;
