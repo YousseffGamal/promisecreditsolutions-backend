@@ -137,3 +137,20 @@ exports.getUserCount = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
+// Get user's credit score by ID
+exports.getCreditScoreById = async (req, res) => {
+    try {
+        // Find the user by ID
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Return the credit score
+        res.json({ creditScore: user.creditScore });
+    } catch (error) {
+        console.error('Error fetching credit score:', error);
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
