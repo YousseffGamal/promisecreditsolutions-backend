@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     role: { type: String, default: 'user', enum: ['user', 'admin'] },
     profileImage: { type: String },
-
     invoices: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Invoice' }],  // Array of ObjectId referencing Invoice model
     creditScore: { type: Number, default: 0 },
 });

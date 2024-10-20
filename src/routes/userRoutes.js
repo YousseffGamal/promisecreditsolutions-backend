@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAllUsers, getUserById, updateUser, deleteUser, getAllInvoicesForUser, getInvoiceForUser, updateCreditScore, getUserCount } = require('../controllers/userController');
+const { getCreditScoreById,getAllUsers, getUserById, updateUser, deleteUser, getAllInvoicesForUser, getInvoiceForUser, updateCreditScore, getUserCount } = require('../controllers/userController');
 const { protect, admin } = require('../middleware/auth');
 const router = express.Router();
 
@@ -20,5 +20,6 @@ router.route('/:id')
 router.route('/:id/invoices').get(protect, getAllInvoicesForUser);
 router.route('/:userId/invoices/:invoiceId').get(protect, getInvoiceForUser);
 router.route('/:id/credit-score').put(updateCreditScore);
+router.route('/:id/credit-score').get(protect, getCreditScoreById); // Add GET route for credit score
 
 module.exports = router;
