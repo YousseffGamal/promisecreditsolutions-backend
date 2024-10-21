@@ -1,9 +1,10 @@
 const User = require('../models/User');
 
+
 // Get all users (admin only)
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await User.find().populate('invoices');
         res.json(users);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
@@ -14,8 +15,8 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
     console.log(`Fetching user with ID: ${req.params.id}`); // Log the user ID being fetched
     try {
-        const user = await User.findById(req.params.id);
-        if (user) {
+        const user = await User.findById(req.params.id).populate('invoices');
+        if (user) { 
             res.json(user);
         } else {
             res.status(404).json({ message: 'User not found' });
