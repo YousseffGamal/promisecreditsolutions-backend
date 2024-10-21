@@ -1,9 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const reviewsController = require('../controllers/reviewsController'); // Adjust path if necessary
+const reviewsController = require('../controllers/reviewsController');
+const multer = require('multer');
 
-// Route to create a new review
-router.post('/reviews', reviewsController.createReview);
+
+
+
+
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Save files to the uploads directory
+    },
+    filename: (req, file, cb) => {
+        // Save file with a timestamp and original name
+        cb(null, `${Date.now()}-${file.originalname}`); 
+    },
+});
+// Use the same `upload` configuration for handling image uploads
+const upload = multer({ storage: storage }); // Use the storage configuration
+
+// Route to create a new review (with image upload)
+router.post('/reviews', upload.single('image'), reviewsController.createReview);
 
 // Route to get all reviews
 router.get('/reviews', reviewsController.getAllReviews);

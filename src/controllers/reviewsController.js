@@ -1,14 +1,29 @@
 const Reviews = require('../models/reviews'); // Adjust path if necessary
+const multer = require('multer');
+const path = require('path');
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Save files to the uploads directory
+    },
+    filename: (req, file, cb) => {
+        // Save file with a timestamp and original name
+        cb(null, `${Date.now()}-${file.originalname}`); 
+    },
+});
 
+const upload = multer({ storage: storage });
 // CREATE: Add a new review
 exports.createReview = async (req, res) => {
     try {
         const { name, date, message } = req.body;
+        const imageUrl = req.file ? req.file.path : null; // Get image path if uploaded
 
         const newReview = new Reviews({
             name,
             date,
             message,
+            imageUrl, // Save image URL
         });
 
         const savedReview = await newReview.save();
