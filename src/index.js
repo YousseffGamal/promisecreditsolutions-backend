@@ -7,6 +7,7 @@ const userRoutes = require('./routes/userRoutes'); // Add user routes
 const invoiceRoutes = require('./routes/invoiceRoutes'); // Add user routes
 const contactRoutes = require('./routes/contactRoutes'); // Import the contact routes
 const reviewsRoutes = require('./routes/reviewsRoutes');
+const newsletterRoutes = require('./routes/newsletterRoutes'); // Add this line
 
 const cors = require('cors');
 
@@ -25,6 +26,7 @@ app.use('/api/users', userRoutes); // Use user routes here
 app.use('/api', invoiceRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api', reviewsRoutes);
+app.use('/api/newsletter', newsletterRoutes); // Use newsletter routes here
 
 // Connect to MongoDB
 const mongoURI = process.env.MONGODB_URI; // Use MONGODB_URI from .env
