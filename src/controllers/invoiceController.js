@@ -182,6 +182,7 @@ exports.deleteInvoice = async (req, res) => {
 
 
 // exports.createInvoice = async (req, res) => {
+
 //   try {
 //     const { name, date, message, price, dueDate, userId } = req.body;
 
@@ -377,6 +378,7 @@ exports.deleteInvoice = async (req, res) => {
 // const path = require('path');
 
 // Improved PDF generation function
+
 const generateInvoicePDF = (invoice) => {
     const doc = new PDFDocument({ size: 'A4', margin: 50 });
     const invoicesDir = path.join(__dirname, '../../invoices'); // Directory for PDFs
@@ -447,76 +449,76 @@ const generateInvoicePDF = (invoice) => {
     return filePath;
 };
 
-// Updated createInvoice function
-exports.createInvoice = async (req, res) => {
-    try {
-        const { name, date, message, price, dueDate, userId } = req.body;
+    // Updated createInvoice function
+    exports.createInvoice = async (req, res) => {
+        try {
+            const { name, date, message, price, dueDate, userId } = req.body;
 
-        // Create a new invoice
-        const newInvoice = new Invoice({
-            name,
-            date,
-            message,
-            price,
-            dueDate,
-            paymentStatus: 'pending',
-        });
+            // Create a new invoice
+            const newInvoice = new Invoice({
+                name,
+                date,
+                message,
+                price,
+                dueDate,
+                paymentStatus: 'pending',
+            });
 
-        // Save the invoice to the database
-        const savedInvoice = await newInvoice.save();
+            // Save the invoice to the database
+            const savedInvoice = await newInvoice.save();
 
-        // Find the user and add the invoice to their invoices array
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            // Find the user and add the invoice to their invoices array
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            user.invoices.push(savedInvoice._id);
+            await user.save();
+
+            // Generate the invoice PDF
+            const pdfPath = generateInvoicePDF(savedInvoice);
+
+            // Prepare email attachments (the PDF invoice)
+            const emailAttachments = [
+                {
+                    filename: `Invoice_${savedInvoice._id}.pdf`,
+                    path: pdfPath,
+                },
+            ];
+
+            // Prepare email content
+            const emailSubject = `Invoice for ${name} - Amount: $${price}`;
+            const emailBody = `
+                Hello ${user.fullName},
+
+                Please find your invoice details below:
+
+                Invoice: ${name}
+                Date: ${date}
+                Due Date: ${dueDate}
+                Message: ${message}
+                Total Amount: $${price}
+                Payment Status: Pending
+
+                Thank you!
+            `;
+
+            // Sending the email with PDF attachment
+            await sendEmail(user.email, emailSubject, emailBody, emailAttachments);
+
+            res.status(201).json({
+                message: 'Invoice created and email sent successfully',
+                invoice: savedInvoice,
+            });
+        } catch (error) {
+            console.error('Error creating invoice:', error);
+            res.status(500).json({
+                message: 'Error creating invoice',
+                error: error.message || error,
+            });
         }
-
-        user.invoices.push(savedInvoice._id);
-        await user.save();
-
-        // Generate the invoice PDF
-        const pdfPath = generateInvoicePDF(savedInvoice);
-
-        // Prepare email attachments (the PDF invoice)
-        const emailAttachments = [
-            {
-                filename: `Invoice_${savedInvoice._id}.pdf`,
-                path: pdfPath,
-            },
-        ];
-
-        // Prepare email content
-        const emailSubject = `Invoice for ${name} - Amount: $${price}`;
-        const emailBody = `
-            Hello ${user.fullName},
-
-            Please find your invoice details below:
-
-            Invoice: ${name}
-            Date: ${date}
-            Due Date: ${dueDate}
-            Message: ${message}
-            Total Amount: $${price}
-            Payment Status: Pending
-
-            Thank you!
-        `;
-
-        // Sending the email with PDF attachment
-        await sendEmail(user.email, emailSubject, emailBody, emailAttachments);
-
-        res.status(201).json({
-            message: 'Invoice created and email sent successfully',
-            invoice: savedInvoice,
-        });
-    } catch (error) {
-        console.error('Error creating invoice:', error);
-        res.status(500).json({
-            message: 'Error creating invoice',
-            error: error.message || error,
-        });
-    }
-};
+    };
 
   
 // In invoiceController.js

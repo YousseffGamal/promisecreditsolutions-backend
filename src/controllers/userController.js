@@ -4,6 +4,8 @@ const User = require('../models/User');
 // Get all users (admin only)
 exports.getAllUsers = async (req, res) => {
     try {
+        
+
         const users = await User.find().populate('invoices');
         res.json(users);
     } catch (error) {
@@ -104,27 +106,84 @@ exports.getInvoiceForUser = async (req, res) => {
 // Update user's credit score (admin only)
 exports.updateCreditScore = async (req, res) => {
     try {
+        const { score } = req.body; // Get the new score from the request body
+
         // Find the user by ID
         const user = await User.findById(req.params.id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Ensure the user performing the action is an admin
-        
+        // Ensure the score is a valid number
+        if (typeof score !== 'number') {
+            return res.status(400).json({ message: 'Credit score must be a number' });
+        }
 
-        // Update the credit score
-        user.creditScore = req.body.creditScore;
+        // If creditScore is not an array, initialize it
+        if (!Array.isArray(user.creditScore)) {
+            user.creditScore = user.creditScore ? [user.creditScore] : [];
+        }
+
+        // Add the new score to the creditScore array
+        user.creditScore.push(score);
 
         // Save the updated user
         const updatedUser = await user.save();
 
-        res.status(200).json({ message: 'Credit score updated successfully', user: updatedUser });
+        // Get the first and latest scores from the array
+        const firstScore = updatedUser.creditScore[0]; // First score entered
+        const latestScore = updatedUser.creditScore[updatedUser.creditScore.length - 1]; // Latest score added
+
+        // Calculate the difference between the first and latest scores
+        const scoreDifference = latestScore - firstScore;
+
+        res.status(200).json({
+            message: 'Credit score updated successfully',
+            user: updatedUser,
+            difference: scoreDifference,
+            firstScore,
+            latestScore
+        });
     } catch (error) {
         console.error('Error updating credit score:', error);
         res.status(500).json({ message: 'Server error', error });
     }
 };
+
+
+// Add a new credit score to a user (admin only)
+exports.addCreditScore = async (req, res) => {
+    try {
+        
+        const { score } = req.body; // Get the new credit score from the request body
+
+        // Find the user by ID
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Ensure the score is a valid number
+        if (typeof score !== 'number') {
+            return res.status(400).json({ message: 'Credit score must be a number' });
+        }
+
+        // Add the new credit score to the array
+        user.creditScore.push(score);
+
+        // Save the updated user
+        const updatedUser = await user.save();
+
+        res.status(200).json({
+            message: 'Credit score added successfully',
+            user: updatedUser,
+        });
+    } catch (error) {
+        console.error('Error adding credit score:', error);
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
 
 
 exports.getUserCount = async (req, res) => {
