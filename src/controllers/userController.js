@@ -214,3 +214,25 @@ exports.getCreditScoreById = async (req, res) => {
         res.status(500).json({ message: 'Server error', error });
     }
 };
+
+// Delete a user (admin only)
+exports.deleteUser = async (req, res) => {
+    try {
+        console.log(`Attempting to delete user with ID: ${req.params.id}`);
+        
+        const user = await User.findById(req.params.id);
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Delete the user by ID
+        await User.findByIdAndDelete(req.params.id);
+
+        console.log('User deleted successfully');
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting user:', error); // Log the full error details
+        res.status(500).json({ message: 'Server error', error: error.message }); // Send the exact error message for debugging
+    }
+};
