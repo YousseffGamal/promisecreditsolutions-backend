@@ -102,7 +102,7 @@ exports.getInvoiceForUser = async (req, res) => {
     }
 };
 
-
+    
 // Update user's credit score (admin only)
 exports.updateCreditScore = async (req, res) => {
     try {

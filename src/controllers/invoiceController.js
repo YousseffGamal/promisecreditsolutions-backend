@@ -532,3 +532,15 @@ exports.countInvoices = async (req, res) => {
       res.status(500).json({ message: 'Error fetching invoice count', error });
   }
 };
+
+
+exports.countPaidInvoices = async (req, res) => {
+    try {
+        // Count only those invoices where paymentStatus is 'paid'
+        const count = await Invoice.countDocuments({ paymentStatus: 'paid' });
+        res.status(200).json({ message: 'Count of paid invoices fetched successfully', count });
+    } catch (error) {
+        console.error('Error fetching count of paid invoices:', error);
+        res.status(500).json({ message: 'Error fetching count of paid invoices', error });
+    }
+};

@@ -5,6 +5,7 @@ const userController = require('../controllers/userController');
 
 // Route to count total number of invoices
 router.get('/invoices/count', invoicesController.countInvoices);   // Count total invoices
+router.get('/invoices/countPaidInvoices', invoicesController.countPaidInvoices);
 
 // Define routes for invoice CRUD operations
 router.post('/invoices', invoicesController.createInvoice);       // Create an invoice
